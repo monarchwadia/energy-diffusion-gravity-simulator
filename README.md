@@ -1,5 +1,8 @@
 # A nebula simulator
 
+![image](https://github.com/monarchwadia/energy-diffusion-gravity-simulator/assets/4856944/f7bb5380-5173-4a86-9227-c3c6e4f36340)
+
+
 I "programmed" a nebula that evolves with every calculated frame. It features stars, gas clouds, and even pockets of empty space.
 
 
