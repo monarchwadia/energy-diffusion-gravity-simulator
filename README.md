@@ -7,7 +7,7 @@ pip install -r requirements.txt
 python simulation.py
 ```
 
-## Screenshots
+## Screencap & Screenshots
 
 ![GIF of the nebula simulator](./screenshots/animation.gif)
 ![screen1](./screenshots//screen1.png)
