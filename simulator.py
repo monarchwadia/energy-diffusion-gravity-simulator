@@ -4,8 +4,10 @@ import pygame
 from pygame.locals import *
 import numpy as np
 
-MAP_WIDTH = 30
-MAP_HEIGHT = 30
+from GravitationalField import GravitationalField
+
+MAP_WIDTH = 50
+MAP_HEIGHT = 50
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -42,8 +44,8 @@ clock.tick(60)
 
 # b = Ball()
 
-# arr = np.random.uniform(low=0.0, high=1.0, size=(MAP_WIDTH, MAP_HEIGHT))
-arr = np.zeros((MAP_WIDTH, MAP_HEIGHT))
+arr = np.random.uniform(low=0.0, high=1.0, size=(MAP_WIDTH, MAP_HEIGHT))
+# arr = np.zeros((MAP_WIDTH, MAP_HEIGHT))
 # arr = np.random.vonmises(0, 1, (MAP_WIDTH, MAP_HEIGHT))
 arr[0][0] = 1
 # arr[0][1] = 1
@@ -67,6 +69,7 @@ count = 0
 
 def generate_next_arr(old_arr):
     next_arr = np.copy(old_arr)
+    gf = GravitationalField(old_arr)
     for x in range(0, MAP_WIDTH):
         for y in range(0, MAP_HEIGHT):
             # R is exchange rate
@@ -77,14 +80,9 @@ def generate_next_arr(old_arr):
             # ne2 is the new energy of the neighbour
             # t is the transfer ratio
 
-            R = 0.1
-            e1 = next_arr[x][y]
+            R = 0.0001
+            G = 0.4
 
-            o = R * e1
-            next_arr[x][y] = e1 - o
-
-            donee_diff_sum = 0
-            donees = []
             for dx, dy, weight in neighbors:
                 if (
                     x + dx < 0
@@ -94,29 +92,55 @@ def generate_next_arr(old_arr):
                 ):
                     continue
 
-                ne1 = next_arr[x + dx][y + dy]
+                e = next_arr[x][y]
+                n = next_arr[x + dx][y + dy]
 
-                if ne1 < e1:
-                    diff = e1 - ne1
-                    donees.append((x + dx, y + dy, diff))
-                    donee_diff_sum += diff
+                if abs(e-n) < R:
+                    continue
 
-            # distribution should be proportional to the difference in energy
+                if e > n:
+                    next_arr[x][y] -= R
+                    next_arr[x + dx][y + dy] += R
+                else:
+                    next_arr[x][y] += R
+                    next_arr[x + dx][y + dy] -= R
 
-            total_transferred = 0
-            for dx, dy, diff in donees:
-                t = diff / donee_diff_sum
-                new_amount = next_arr[dx][dy] + (o * t)
-                next_arr[dx][dy] = total_transferred = new_amount
+            vector = gf.get_vector_at_point(x, y)
+            # get which neighbor this vector points to
+            # and transfer energy to that neighbor
 
-                # check if we have overshoot
-                if total_transferred > 1:
-                    surplus = total_transferred - 1
-                    next_arr[dx][dy] = 1
-                    next_arr[x][y] += surplus
-                    total_transferred -= surplus
+            neighbor = (x + int(vector[0]), y + int(vector[1]))
+            if (
+                neighbor[0] < 0
+                or neighbor[0] >= MAP_WIDTH
+                or neighbor[1] < 0
+                or neighbor[1] >= MAP_HEIGHT
+            ):
+                continue
 
-                print("total transferred", total_transferred)
+            differential = next_arr[x][y] - next_arr[neighbor[0]][neighbor[1]]
+            if differential < 0:
+                differential = next_arr[x][y]
+
+            next_arr[x][y] -= differential * G
+            next_arr[neighbor[0]][neighbor[1]] += differential * G
+
+            # # distribution should be proportional to the difference in energy
+
+            # total_transferred = 0
+            # for dx, dy, diff in donees:
+            #     t = diff / donee_diff_sum
+            #     new_amount = next_arr[dx][dy] + (o * t)
+            #     next_arr[dx][dy] = total_transferred = new_amount
+
+            #     # check if we have overshoot
+            #     if total_transferred > 1:
+            #         surplus = total_transferred - 1
+            #         next_arr[dx][dy] = 1
+            #         next_arr[x][y] += surplus
+            #         total_transferred -= surplus
+
+            #     print("total transferred", total_transferred)
 
             # mean = neighbourhood_energy / neighbour_count
 
@@ -154,8 +178,13 @@ while True:
                 color_base = 20
                 color = ((255 - color_base) * val) + color_base
                 # print(val)
-                screen.fill((color, color, color), (x * CELL_WIDTH,
-                            y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT))
+
+                try:
+                    screen.fill((color, color, color), (x * CELL_WIDTH,
+                                y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT))
+                except Exception as e:
+                    print(e)
+                    print("Error occurred at", x, y, "and the value was", val)
 
     # stats
     total = np.sum(arr)
