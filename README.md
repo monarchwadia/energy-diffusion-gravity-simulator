@@ -1,6 +1,21 @@
 # A nebula simulator
 
-![image](animation.gif)
+## How to run
+
+```bash
+pip install -r requirements.txt
+python simulation.py
+```
+
+## Screenshots
+
+![GIF of the nebula simulator](./screenshots/animation.gif)
+![screen1](./screenshots//screen1.png)
+![screen2](./screenshots//screen2.png)
+![screen3](./screenshots//screen3.png)
+![screen4](./screenshots//screen4.png)
+![screen5](./screenshots//screen5.png)
+## What is this
 
 
 I "programmed" a nebula that evolves with every calculated frame. It features stars, gas clouds, and even pockets of empty space.
@@ -49,11 +64,4 @@ Perfection.
 
 
 Nerdy stuff: This is a 2D cellular automaton, like Conway's Game of Life. I used fast fourier transform to calculate the gravitational forces, and I wrote a custom diffusion algorithm that respects the conservation of energy. Pygame does the rendering. Took me ~1 day to write from scratch, starting with just my imagination.
-
-# How to run
-
-```bash
-pip install -r requirements.txt
-python simulation.py
-```
 
