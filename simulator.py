@@ -80,8 +80,8 @@ def generate_next_arr(old_arr):
             # ne2 is the new energy of the neighbour
             # t is the transfer ratio
 
-            R = 0.0001
-            G = 0.4
+            R = 0.01
+            G = 0.2
 
             for dx, dy, weight in neighbors:
                 if (
@@ -188,7 +188,7 @@ while True:
 
     # stats
     total = np.sum(arr)
-    pygame.display.set_caption(f"Total: {total}")
+    pygame.display.set_caption(f"Total energy: {total}")
 
     pygame.display.update()
     clock.tick(60)
