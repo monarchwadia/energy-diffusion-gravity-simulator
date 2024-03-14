@@ -4,8 +4,8 @@ import pygame
 from pygame.locals import *
 import numpy as np
 
-MAP_WIDTH = 30
-MAP_HEIGHT = 30
+MAP_WIDTH = 200
+MAP_HEIGHT = 200
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -42,7 +42,7 @@ clock.tick(60)
 
 # b = Ball()
 
-arr = np.zeros((MAP_WIDTH, MAP_HEIGHT))
+arr = np.random.uniform(low=0.0, high=1.0, size=(MAP_WIDTH, MAP_HEIGHT))
 arr[MAP_WIDTH // 2][MAP_HEIGHT // 2] = 1
 
 neighbors = [
@@ -50,6 +50,9 @@ neighbors = [
     (-1, 0, 1.0),   (0, 0, 0),      (1, 0, 1.0),
     (-1, 1, 1.0),   (0, 1, 1.0),    (1, 1, 1.0)
 ]
+
+
+count = 0
 
 
 def generate_next_arr(old_arr):
@@ -76,7 +79,8 @@ def generate_next_arr(old_arr):
 
             old = cell_energy
             mean = neighbourhood_energy / neighbour_count
-            new = mean - ((old - mean) * 0.5)
+            random = np.random.normal(-0.13, 0.1)
+            new = mean - ((old - mean) * 0.9843) + random
 
             next_arr[x][y] = min(max(new, 0), 1)
 
@@ -87,6 +91,11 @@ def generate_next_arr(old_arr):
 
             # next_arr[x][y] = min(
             #     1.0, max(0.0, cell_energy + (diff + overshoot)))
+    # always add energy in the center
+    next_arr[MAP_WIDTH // 2][MAP_HEIGHT // 2] = 1
+    next_arr[MAP_WIDTH // 3][MAP_HEIGHT // 3] = 1
+    next_arr[MAP_WIDTH // 4][MAP_HEIGHT // 4] = 1
+
     return next_arr
 
 
@@ -101,19 +110,22 @@ while True:
     print("GEN")
 
     # Paint
-    screen.fill(color_bg)
-    for x in range(0, MAP_WIDTH):
-        for y in range(0, MAP_HEIGHT):
-            val = arr[x][y]
-            color_base = 20
-            color = ((255 - color_base) * val) + color_base
-            print(val)
-            screen.fill((color, color, color), (x * CELL_WIDTH,
-                        y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT))
+    count += 1
+    if count % 10 == 0:
+        count = 0
+        screen.fill(color_bg)
+        for x in range(0, MAP_WIDTH):
+            for y in range(0, MAP_HEIGHT):
+                val = arr[x][y]
+                color_base = 20
+                color = ((255 - color_base) * val) + color_base
+                print(val)
+                screen.fill((color, color, color), (x * CELL_WIDTH,
+                            y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT))
 
     # stats
     total = np.sum(arr)
     pygame.display.set_caption(f"Total: {total}")
 
     pygame.display.update()
-    clock.tick(15)
+    clock.tick(255)
