@@ -16,7 +16,9 @@
 # R = .14; G = 0.374  # Plasma Clouds
 # R = .08; G = 0.32 # Spasming bubbles...
 # R = .07; G = 0.30  # Curdling liquid
-# R = .07; G = 0.305  # Whirling void bubles
+# R = .07; G = 0.305  # Whirling void
+R = .07
+G = 0.305  # Whirling void
 
 # Note to self, a kind of "git bisect"-inspired control would be interesting...
 # buttons that say 'good' and 'bad' to find the best values for R and G
