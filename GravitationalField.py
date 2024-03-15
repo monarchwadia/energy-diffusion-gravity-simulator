@@ -3,16 +3,17 @@ import numpy.fft as fft
 
 
 class GravitationalField:
-    def __init__(self, mass_distribution_grid):
+    def __init__(self, mass_distribution_grid, g: float):
         """
         Initializes the gravitational field with the given mass distribution grid.
         The mass distribution grid is a 2D list of floats from 0 to 1, where 0 represents no mass and 1 represents the maximum mass.
         """
+        self.g = g
         self.mass_distribution = np.array(mass_distribution_grid, dtype=float)
         self.gravitational_field_vectors = self._compute_gravitational_field()
 
     def _compute_gravitational_field(self):
-        G = 1  # Gravitational constant, adjust as needed
+        G = self.g  # Gravitational constant, adjust as needed
         N, M = self.mass_distribution.shape
 
         # Fourier transform of the mass distribution

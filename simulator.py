@@ -3,7 +3,7 @@ import pygame
 from pygame.locals import *
 import numpy as np
 from GravitationalField import GravitationalField
-from constants import CELL_HEIGHT, CELL_WIDTH, MAP_HEIGHT, MAP_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH
+from constants import CELL_HEIGHT, CELL_WIDTH, G, MAP_HEIGHT, MAP_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH
 from update_cell import update_cell
 
 # Pygame setup --------------------------------------------------------------------------
@@ -31,7 +31,7 @@ count = 0
 
 def generate_next_arr(old_arr):
     next_arr = np.copy(old_arr)
-    gf = GravitationalField(old_arr)
+    gf = GravitationalField(old_arr, G)
     for x in range(0, MAP_WIDTH):
         for y in range(0, MAP_HEIGHT):
             update_cell(gf, next_arr, x, y)
