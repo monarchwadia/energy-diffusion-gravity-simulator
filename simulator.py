@@ -124,22 +124,25 @@ while True:
         for x in range(0, MAP_WIDTH):
             for y in range(0, MAP_HEIGHT):
                 val = arr[x][y]
-                color_base = 20
-                color = ((255 - color_base) * val) + color_base
 
                 hsva_color = pygame.color.Color(0, 0, 0, 0)
                 try:
                     hsva_color.hsva = (val * 360, val * 50, val * 100, 100)
                 except Exception as e:
+                    if val >= 1:
+                        hsva_color.hsva = (275, 100, 100, 100)
+                    else:
+                        hsva_color.hsva = (0, 0, 0, 0,)
+                    # print(val)
                     pass
-                # print(val)
 
                 try:
                     screen.fill(hsva_color, (x * CELL_WIDTH,
                                 y * CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT))
                 except Exception as e:
-                    print(e)
-                    print("Error occurred at", x, y, "and the value was", val)
+                    # print(e)
+                    # print("Error occurred at", x, y, "and the value was", val)
+                    pass
 
     # stats
     total = np.sum(arr)
